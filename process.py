@@ -21,28 +21,27 @@
 import re
 import time
 
-from client import BBSXPTelnetClient
+from client import PttXPTelnetClient
 
-class BBSXPScriptRunner:
+class PttXPScriptRunner:
     def __init__(self):
-        self.client = BBSXPTelnetClient()
-        self.client.open('ptt.cc')
+        self.client = PttXPTelnetClient()
         self.cmds = {}
-        self.cmds['^%login ([^,]*),(.*)'] = self.client.login
-        self.cmds['^%logout'] = self.client.logout
-        self.cmds['^%enter'] = self.client.key_enter
-        self.cmds['^%up'] = self.client.key_up
-        self.cmds['^%down'] = self.client.key_down
-        self.cmds['^%left'] = self.client.key_left
-        self.cmds['^%right'] = self.client.key_right
-        self.cmds['^%pageup'] = self.client.key_pageup
-        self.cmds['^%pagedown'] = self.client.key_pagedown
-        self.cmds['^%home'] = self.client.key_home
-        self.cmds['^%end'] = self.client.key_end
-        self.cmds['^%ctrl-([a-z])'] = self.client.key_control
-        self.cmds['^%goboard (.*)'] = self.client.go_board
-        self.cmds['^%postfile ([^,]*),(.*)'] = self.client.post
-        self.cmds['^%fromfile (.*)'] = self.client.write_content_from_file
+        self.cmds['^#login ([^,]*),(.*)'] = self.client.login
+        self.cmds['^#logout'] = self.client.logout
+        self.cmds['^#enter'] = self.client.key_enter
+        self.cmds['^#up'] = self.client.key_up
+        self.cmds['^#down'] = self.client.key_down
+        self.cmds['^#left'] = self.client.key_left
+        self.cmds['^#right'] = self.client.key_right
+        self.cmds['^#pageup'] = self.client.key_pageup
+        self.cmds['^#pagedown'] = self.client.key_pagedown
+        self.cmds['^#home'] = self.client.key_home
+        self.cmds['^#end'] = self.client.key_end
+        self.cmds['^#ctrl-([a-z])'] = self.client.key_control
+        self.cmds['^#goboard (.*)'] = self.client.go_board
+        self.cmds['^#postfile ([^,]*),(.*)'] = self.client.post
+        self.cmds['^#fromfile (.*)'] = self.client.write_content_from_file
 
     def run(self, script):
         controls = script.split('\n')
