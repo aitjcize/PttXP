@@ -18,6 +18,7 @@
 # Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
+import platform
 import telnetlib
 import time
 
@@ -136,6 +137,8 @@ class PttXPTelnetClient:
         limit = int(limit)
         self.logout()
         count = 0
+        if 'Windows' == platform.system():
+            boardlist = boardlist.decode('utf8').encode('big5')
         f = open(boardlist, 'r')
         boards = f.readlines()
         f.close()
@@ -165,6 +168,8 @@ class PttXPTelnetClient:
 
     def write_content_from_file(self, name):
         self.print_message('Writting from file %s ...' % name)
+        if 'Windows' == platform.system():
+            name = name.decode('utf8').encode('big5')
         f = open(name, 'r')
         data = f.read().replace('\x1b', '\025')
         self.write(data)

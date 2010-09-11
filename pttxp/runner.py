@@ -60,6 +60,7 @@ Macros:
       BOARDLIST_FILENAME: list of board names you want to post
       TITLE: title of the article
       FILENAME: file name of the content to be post
+17. Any none macro characters are sent to PTT untouched
 
 Example:
 1. Login to PTT:

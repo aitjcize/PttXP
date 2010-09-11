@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import gtk
+import os.path
 
 from client import PttXPTelnetClient, PttXPLoginError
 from runner import PttXPScriptRunner, HELPTEXT
@@ -57,6 +58,7 @@ class PttXPGui:
         self.script_runner = PttXPScriptRunner(self.script_client, True)
 
         gtk.window_set_default_icon_from_file(program_logo)
+        self.mainwindow.set_title('%s %s' % (program_name, program_version))
         self.mainwindow.set_position(gtk.WIN_POS_CENTER)
         self.mainwindow.show_all()
         gtk.main()
@@ -154,6 +156,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
                                         gtk.FILE_CHOOSER_ACTION_SAVE,
                                         (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                                         gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        chooser.set_current_folder(os.path.expanduser('~'))
         response = chooser.run()
         name = chooser.get_filename()
         chooser.destroy()
