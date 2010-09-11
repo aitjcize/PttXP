@@ -34,7 +34,7 @@ program_name = 'PttXP'
 program_version = '0.1.0'
 
 program_logo = SHARE_PATH + '/pttxp.png'
-ui_file = SHARE_PATH + 'pttxp.glade'
+ui_file = SHARE_PATH + '/pttxp.glade'
 
 # For py2exe packaging
 if running_os == 'Windows':
