@@ -126,7 +126,7 @@ class PttXPGui:
         about.set_position(gtk.WIN_POS_CENTER)
         about.set_name(program_name)
         about.set_version(program_version)
-        about.set_comments('Ptt Posting/Scriting Utility')
+        about.set_comments('Ptt Posting/Scripting Utility')
         about.set_license('''
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
