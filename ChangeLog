@@ -1,5 +1,12 @@
 2010-09-11  AZ Huang <aitjcize@gmail.com>
 
+  * data/pttxp.glade: update glade file
+
+  * wiki/pttxp_001.png, wiki/pttxp_002.png, wiki/pttxp_003.png,
+  wiki/pttxp_004.png: add wiki files
+
+  * ChangeLog, dev/control, pttxp/misc.py, setup.py: Fix typo in setup.py
+
   * ChangeLog, README, data/pttxp.desktop, dev/chver.sh, dev/control,
   dev/rules, setup.py: Add build related files
 
