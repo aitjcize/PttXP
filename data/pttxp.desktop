@@ -1,0 +1,9 @@
+[Desktop Entry]
+Categories=Application;Network;
+Encoding=UTF-8
+Name=PttXP
+Exec=pttxp
+Icon=pttxp
+Type=Application
+Terminal=false
+Comment=Ptt Posting/Scripting Utility

@@ -1,0 +1,8 @@
+2010-09-11  AZ Huang <aitjcize@gmail.com>
+
+  * README, bin/pttxp, client.py, data/pttxp.glade, data/pttxp.png, main.py,
+  process.py, pttxp/client.py, pttxp/gui.py, pttxp/main.py, pttxp/misc.py,
+  pttxp/runner.py, test.py, test.script: finish pttxp
+
+  * client.py, client.pyc, list.txt, process.py, process.pyc, test.py,
+  test.txt: little change

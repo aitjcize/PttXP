@@ -1,5 +1,8 @@
 PttXP - Ptt Posting/Scripting Utility
 
+PttXP can post articles to a list of boards that you want to post automatically  without manully interference. PttXP also provides a scripting environment so
+that you can write a script to do things for you on PTT.
+
 Macros:
 1. #connect HOST
    - connect to HOST
