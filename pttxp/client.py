@@ -41,7 +41,6 @@ class PttXPTelnetClient:
             return text
 
     def connect(self, host):
-        print 'here'
         if self.connected:
             self.telnet.close()
             self.connected = False
@@ -119,6 +118,7 @@ class PttXPTelnetClient:
 
     def postfile(self, title, filename):
         self.print_message('Posting %s ...' % title)
+        # press end to prevent pressing ctrl-p in the welcome page
         self.key_end()
         self.key_end()
         self.key_control('p')
@@ -135,10 +135,12 @@ class PttXPTelnetClient:
             exit(1)
 
         limit = int(limit)
+        # logout first to prevent crossing the cp_limit
         self.logout()
         count = 0
         if 'Windows' == platform.system():
             boardlist = boardlist.decode('utf8').encode('big5')
+
         f = open(boardlist, 'r')
         boards = f.readlines()
         f.close()
@@ -171,6 +173,7 @@ class PttXPTelnetClient:
         if 'Windows' == platform.system():
             name = name.decode('utf8').encode('big5')
         f = open(name, 'r')
+        # replace \x1b with \025 to provide ANSI color output
         data = f.read().replace('\x1b', '\025')
         self.write(data)
         f.close()

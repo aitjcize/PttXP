@@ -98,8 +98,9 @@ class PttXPScriptRunner:
         self.showterm = showterm
         self.stop = False
         self.cmds = {}
-        self.cmds['^#connect (.*)'] = self.client.connect
-        self.cmds['^#login ([^,]*),([^,]*),(.*)'] = self.client.login
+        self.cmds['^#connect\W*(.*)'] = self.client.connect
+        self.cmds['^#login\W*([^,]*)\W*,\W*([^,]*)\W*,\W*(.*)'] = \
+                self.client.login
         self.cmds['^#logout'] = self.client.logout
         self.cmds['^#enter'] = self.client.key_enter
         self.cmds['^#up'] = self.client.key_up
@@ -111,13 +112,16 @@ class PttXPScriptRunner:
         self.cmds['^#home'] = self.client.key_home
         self.cmds['^#end'] = self.client.key_end
         self.cmds['^#ctrl-([a-z])'] = self.client.key_control
-        self.cmds['^#goboard (.*)'] = self.client.go_board
-        self.cmds['^#postfile ([^,]*),(.*)'] = self.client.postfile
-        self.cmds['^#fromfile (.*)'] = self.client.write_content_from_file
-        self.cmds['^#crosspost ([^,]*),([^,]*),([^,]*),(.*)'] = \
-                self.client.crosspost
+        self.cmds['^#goboard\W*(.*)'] = self.client.go_board
+        self.cmds['^#postfile\W*([^,]*)\W*,\W*(.*)'] = self.client.postfile
+        self.cmds['^#fromfile\W*(.*)'] = self.client.write_content_from_file
+        self.cmds['^#crosspost\W*([^,]*)\W*,\W*([^,]*)\W*,\W*([^,]*)\W*,'
+                  '\W*(.*)'] = self.client.crosspost
 
     def run(self, script):
+        '''
+        run script from text
+        '''
         controls = script.split('\n')
         for term in controls:
             if self.showterm:
@@ -125,7 +129,10 @@ class PttXPScriptRunner:
             # stop if signaled
             if self.stop: return
 
+            # This is very importent, if you send characters without delay,
+            # telnet will go into non-negociate mode
             time.sleep(0.3)
+
             for key in self.cmds:
                 got = re.findall(key, term)
                 var = key.count('(')
@@ -136,14 +143,8 @@ class PttXPScriptRunner:
                     elif var == 1:
                         self.cmds[key](got[0])
                         break;
-                    elif var == 2:
+                    else:
                         self.cmds[key](*got[0])
                         break;
-                    elif var == 3:
-                        self.cmds[key](*got[0])
-                        break;
-                    elif var == 4:
-                        self.cmds[key](*got[0])
-                        break;
-            else:
+            else: # not macros, write it direct to telnet
                 self.client.write(term)

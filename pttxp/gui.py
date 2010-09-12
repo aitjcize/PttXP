@@ -143,8 +143,8 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ''')
         about.set_copyright('Copyright 2010 Wei-Ning Huang (AZ)')
-        about.set_website('http://berelent.blogspot.com/2010/09/pttxp-ptt.html')
-        about.set_website_label('PttXP at GitHub')
+        about.set_website('http://berelent.blogspot.com/p/pttxp-ptt.html')
+        about.set_website_label('PttXP')
         about.set_authors(['Wei-Ning Huang (AZ) <aitjcize@gmail.com>'])
         about.set_logo(gtk.gdk.pixbuf_new_from_file_at_size(program_logo,
             96, 96))
@@ -165,6 +165,3 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
             return None
         else:
             return name
-
-if __name__ == '__main__':
-    PttXPGui()
