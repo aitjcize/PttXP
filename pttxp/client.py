@@ -67,7 +67,7 @@ class PttXPTelnetClient:
         if '[Y/n]' in data:
             self.write('n\r')
             time.sleep(3)
-        if 'guest' in data:
+        elif 'guest' in data:
             self.loggedin = False
             self.print_message('Login failed.')
             raise PttXPLoginError
@@ -162,6 +162,7 @@ class PttXPTelnetClient:
         self.logout()
     
     def write(self, data):
+        if 0 == len(data): return
         try:
             self.telnet.write(data)
             self.output()
