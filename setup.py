@@ -25,6 +25,6 @@ setup(
 	license = 'GPL',
     	packages = ['pttxp'],
 	package_data = {'pttxp' : files },
-	scripts = ['bin/pttxp'],
+	scripts = ['bin/pttxp', 'bin/xdrun'],
 	data_files = _data_files
 )
