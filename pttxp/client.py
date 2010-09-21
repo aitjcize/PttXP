@@ -72,7 +72,14 @@ class PttXPTelnetClient:
             self.print_message('Login failed.')
             raise PttXPLoginError
         self.key_enter()
-        self.key_enter()
+
+        # Skip prompt for saving unfinished post
+        data = self.telnet.read_until('[S]', 3)
+        if '[S]' in data:
+            self.write('q\r')
+        else:
+            self.key_enter()
+
         self.loggedin = True
 
     def logout(self):
@@ -129,7 +136,22 @@ class PttXPTelnetClient:
         self.write('s\r')
         self.write('0\r')
 
-    def crosspost(self, limit, boardlist, title, filename):
+    def delete_header(self):
+        self.write('a')
+        self.write('%s\r' % self.user)
+        self.key_end()
+        self.key_end()
+        self.key_left()
+        self.write('E')
+        self.key_control('y')
+        self.key_control('y')
+        self.key_control('y')
+        self.key_control('y')
+        self.key_control('x')
+        self.write('s\r')
+        self.key_enter()
+
+    def crosspost(self, limit, delete_header, boardlist, title, filename):
         if not self.loggedin:
             self.print_message('Please login first!')
             exit(1)
@@ -153,6 +175,8 @@ class PttXPTelnetClient:
                 self.login(self.host, self.user, self.passwd)
             self.go_board(b)
             self.postfile(title, filename)
+            if 'True' == delete_header:
+                self.delete_header()
             count += 1
             time.sleep(1)
             if count == limit -1:
@@ -173,15 +197,23 @@ class PttXPTelnetClient:
         self.print_message('Writting from file %s ...' % name)
         if 'Windows' == platform.system():
             name = name.decode('utf8').encode('big5')
+
         f = open(name, 'r')
+        data = f.read()
+
         # replace \x1b with \025 to provide ANSI color output
-        data = f.read().replace('\x1b', '\025')
+        data = data.replace('\x1b', '\025')
+
+        # windows version of telnetlib won't send \r
+        if 'Windows' == platform.system():
+            data = data.replace('\n', '\n\r')
+
         self.write(data)
         f.close()
 
     def go_board(self, board):
         self.print_message('In board: %s' % board)
-        for i in range(5):
+        for i in range(10):
             self.key_left()
         self.write('s%s\r' % board)
 

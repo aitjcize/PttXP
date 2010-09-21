@@ -52,15 +52,18 @@ Macros:
    - go to board named BOARD
 14. #postfile TITLE,FILENAME
    - post a article titled TITLE, file content from FILENAME
-15. #fromfile FILENAME
+15. #delete_header
+   - delete the header the latest post
+16. #fromfile FILENAME
    - Write content from file with FILENAME
-16. #crosspost CP_LIMIT,BOARDLIST_FILENAME,TITLE,FILENAME
+17. #crosspost CP_LIMIT,DELETE_HEADER,BOARDLIST_FILENAME,TITLE,FILENAME
    - Cross posting:
       CP_LIMIT: the number of the posts that you will get caught
+      DELETE_HEADER: True or False, whether or not to delete post header
       BOARDLIST_FILENAME: list of board names you want to post
       TITLE: title of the article
       FILENAME: file name of the content to be post
-17. Any none macro characters are sent to PTT untouched
+18. Any none macro characters are sent to PTT untouched
 
 Example:
 1. Login to PTT:
@@ -114,9 +117,10 @@ class PttXPScriptRunner:
         self.cmds['^#ctrl-([a-z])'] = self.client.key_control
         self.cmds['^#goboard\W*(.*)'] = self.client.go_board
         self.cmds['^#postfile\W*([^,]*)\W*,\W*(.*)'] = self.client.postfile
+        self.cmds['^#delete_header'] = self.client.delete_header
         self.cmds['^#fromfile\W*(.*)'] = self.client.write_content_from_file
         self.cmds['^#crosspost\W*([^,]*)\W*,\W*([^,]*)\W*,\W*([^,]*)\W*,'
-                  '\W*(.*)'] = self.client.crosspost
+                  '\W*([^,]*)\W*,\W*(.*)'] = self.client.crosspost
 
     def run(self, script):
         '''

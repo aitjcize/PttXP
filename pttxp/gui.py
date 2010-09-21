@@ -34,6 +34,7 @@ class PttXPGui:
         self.boardlist = self.builder.get_object('boardlist')
         self.boardlist_button = self.builder.get_object('boardlist_button')
         self.limit = self.builder.get_object('limit')
+        self.deleteheader = self.builder.get_object('deleteheader')
         self.title = self.builder.get_object('title')
         self.content = self.builder.get_object('content')
         self.content_button = self.builder.get_object('content_button')
@@ -79,6 +80,7 @@ class PttXPGui:
         passwd = self.passwd.get_text()
         boardlist = self.boardlist.get_text()
         limit = self.limit.get_value()
+        delete = str(self.deleteheader.get_active())
         title = self.title.get_text()
         content = self.content.get_text()
 
@@ -92,7 +94,7 @@ class PttXPGui:
         except PttXPLoginError:
             self.post_print_message('\n----------- Abort -----------\n')
             return
-        self.post_client.crosspost(limit, boardlist, title, content)
+        self.post_client.crosspost(limit, delete, boardlist, title, content)
         self.post_print_message('\n----------- All Finished -----------\n')
 
     def on_post_stop_button_clicked(self, widget):
@@ -150,6 +152,9 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
             96, 96))
         about.connect('response', lambda x, y, z: about.destroy(), True)
         about.show_all()
+
+    def on_quit_clicked(self, widget):
+        gtk.main_quit()
  
     def get_filename(self):
         chooser = gtk.FileChooserDialog("Browse", self.mainwindow,
