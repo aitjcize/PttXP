@@ -53,7 +53,7 @@ Macros:
 14. #postfile TITLE,FILENAME
    - post a article titled TITLE, file content from FILENAME
 15. #delete_header
-   - delete the header the latest post
+   - delete the header of the latest post
 16. #fromfile FILENAME
    - Write content from file with FILENAME
 17. #crosspost CP_LIMIT,DELETE_HEADER,BOARDLIST_FILENAME,TITLE,FILENAME

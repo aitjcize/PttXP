@@ -62,11 +62,11 @@ class PttXPTelnetClient:
         self.output()
         self.telnet.write('%s\r%s\r' % (user, passwd))
 
-        data = self.telnet.read_until('[Y/n]', 3)
+        data = self.telnet.read_until('[Y/n]', 1)
         # Do not delete other login
         if '[Y/n]' in data:
             self.write('n\r')
-            time.sleep(3)
+            time.sleep(2)
         elif 'guest' in data:
             self.loggedin = False
             self.print_message('Login failed.')
@@ -74,7 +74,7 @@ class PttXPTelnetClient:
         self.key_enter()
 
         # Skip prompt for saving unfinished post
-        data = self.telnet.read_until('[S]', 3)
+        data = self.telnet.read_until('[S]', 1)
         if '[S]' in data:
             self.write('q\r')
         else:
@@ -182,7 +182,7 @@ class PttXPTelnetClient:
             if count == limit -1:
                 count = 0
                 self.logout()
-                time.sleep(2)
+                time.sleep(1)
         self.logout()
     
     def write(self, data):
