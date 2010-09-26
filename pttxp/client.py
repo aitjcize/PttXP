@@ -62,7 +62,7 @@ class PttXPTelnetClient:
         self.output()
         self.telnet.write('%s\r%s\r' % (user, passwd))
 
-        data = self.telnet.read_until('[Y/n]', 1)
+        data = self.telnet.read_until('[Y/n]', 2)
         # Do not delete other login
         if '[Y/n]' in data:
             self.write('n\r')
@@ -74,7 +74,7 @@ class PttXPTelnetClient:
         self.key_enter()
 
         # Skip prompt for saving unfinished post
-        data = self.telnet.read_until('[S]', 1)
+        data = self.telnet.read_until('[S]', 2)
         if '[S]' in data:
             self.write('q\r')
         else:
@@ -85,12 +85,14 @@ class PttXPTelnetClient:
     def logout(self):
         self.print_message('Logout')
         # TODO: find a better way
-        for i in range(20):
-            self.telnet.write('\033[D')
-            self.output()
-        self.key_right()
-        self.telnet.write('y\r')
-        self.telnet.close()
+        try:
+            for i in range(20):
+                self.telnet.write('\033[D')
+                self.output()
+            self.key_right()
+            self.telnet.write('y\r')
+            self.telnet.close()
+        except: pass
         self.loggedin = False
 
     def key_enter(self):
@@ -137,6 +139,8 @@ class PttXPTelnetClient:
         self.write('0\r')
 
     def delete_header(self):
+        self.print_message('Deleting header ...')
+        self.key_end()
         self.write('a')
         self.write('%s\r' % self.user)
         self.key_end()
@@ -168,6 +172,7 @@ class PttXPTelnetClient:
         f.close()
 
         for b in boards:
+            b = b.strip()
             if self.stop:
                 self.logout()
                 return
@@ -190,6 +195,7 @@ class PttXPTelnetClient:
         try:
             self.telnet.write(data)
             self.output()
+            time.sleep(0.3)
         except AttributeError:
             self.print_message("Write error")
 
@@ -212,10 +218,11 @@ class PttXPTelnetClient:
         f.close()
 
     def go_board(self, board):
-        self.print_message('In board: %s' % board)
         for i in range(10):
             self.key_left()
-        self.write('s%s\r' % board)
+        self.write('s')
+        self.write('%s\r' % board)
+        self.print_message('\nIn board: %s' % board)
 
     def print_message(self, msg):
         print msg

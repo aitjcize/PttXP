@@ -91,10 +91,10 @@ class PttXPGui:
         self.post_client.stop = False
         try:
             self.post_client.login(host, user, passwd)
+            self.post_client.crosspost(limit, delete, boardlist, title, content)
         except PttXPLoginError:
             self.post_print_message('\n----------- Abort -----------\n')
             return
-        self.post_client.crosspost(limit, delete, boardlist, title, content)
         self.post_print_message('\n----------- All Finished -----------\n')
 
     def on_post_stop_button_clicked(self, widget):
