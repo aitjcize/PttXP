@@ -52,15 +52,15 @@ Macros:
    - go to board named BOARD
 14. #postfile TITLE,FILENAME
    - post a article titled TITLE, file content from FILENAME
-15. #delete_header
-   - delete the header of the latest post
+15. #delete_header BOARD
+   - delete the header of the latest post in BOARD
 16. #fromfile FILENAME
    - Write content from file with FILENAME
-17. #crosspost CP_LIMIT,DELETE_HEADER,BOARDLIST_FILENAME,TITLE,FILENAME
+17. #crosspost CP_LIMIT,DELETE_HEADER,BOARDLIST,TITLE,FILENAME
    - Cross posting:
       CP_LIMIT: the number of the posts that you will get caught
       DELETE_HEADER: True or False, whether or not to delete post header
-      BOARDLIST_FILENAME: list of board names you want to post
+      BOARDLIST: list of board names you want to post
       TITLE: title of the article
       FILENAME: file name of the content to be post
 18. Any none macro characters are sent to PTT untouched
@@ -117,7 +117,7 @@ class PttXPScriptRunner:
         self.cmds['^#ctrl-([a-z])'] = self.client.key_control
         self.cmds['^#goboard\W*(.*)'] = self.client.go_board
         self.cmds['^#postfile\W*([^,]*)\W*,\W*(.*)'] = self.client.postfile
-        self.cmds['^#delete_header'] = self.client.delete_header
+        self.cmds['^#delete_header\W*(.*)'] = self.client.delete_header
         self.cmds['^#fromfile\W*(.*)'] = self.client.write_content_from_file
         self.cmds['^#crosspost\W*([^,]*)\W*,\W*([^,]*)\W*,\W*([^,]*)\W*,'
                   '\W*([^,]*)\W*,\W*(.*)'] = self.client.crosspost

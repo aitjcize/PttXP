@@ -138,11 +138,14 @@ class PttXPTelnetClient:
         self.write('s\r')
         self.write('0\r')
 
-    def delete_header(self):
+    def delete_header(self, board):
         self.print_message('Deleting header ...')
+        self.go_board(board, True)
+        self.key_end()
         self.key_end()
         self.write('a')
-        self.write('%s\r' % self.user)
+        self.write('%s' % self.user)
+        self.key_enter()
         self.key_end()
         self.key_end()
         self.key_left()
@@ -156,6 +159,7 @@ class PttXPTelnetClient:
         self.key_enter()
 
     def crosspost(self, limit, delete_header, boardlist, title, filename):
+        self.print_message('>>> Start \n')
         if not self.loggedin:
             self.print_message('Please login first!')
             exit(1)
@@ -175,27 +179,39 @@ class PttXPTelnetClient:
             b = b.strip()
             if self.stop:
                 self.logout()
+                self.print_message('\n>>> Interrupted\n')
                 return
+
             if count == 0:
-                self.login(self.host, self.user, self.passwd)
+                for i in range(5):
+                    try:
+                        self.login(self.host, self.user, self.passwd)
+                    except PttXPLoginError:
+                        if i == 4:
+                            self.print_message('\n>>> Abort\n')
+                        else:
+                            self.print_message('>>> Retring ...')
+                    else:
+                        break
+
             self.go_board(b)
             self.postfile(title, filename)
             if 'True' == delete_header:
-                self.delete_header()
+                self.delete_header(b)
             count += 1
-            time.sleep(1)
             if count == limit -1:
                 count = 0
                 self.logout()
                 time.sleep(1)
+
         self.logout()
+        self.print_message('\n>>> All Finished\n')
     
     def write(self, data):
         if 0 == len(data): return
         try:
             self.telnet.write(data)
             self.output()
-            time.sleep(0.3)
         except AttributeError:
             self.print_message("Write error")
 
@@ -217,12 +233,13 @@ class PttXPTelnetClient:
         self.write(data)
         f.close()
 
-    def go_board(self, board):
+    def go_board(self, board, mute=False):
         for i in range(10):
             self.key_left()
         self.write('s')
         self.write('%s\r' % board)
-        self.print_message('\nIn board: %s' % board)
+        if not mute:
+            self.print_message('\nIn board: %s' % board)
 
     def print_message(self, msg):
         print msg

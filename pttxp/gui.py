@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import threading
+
+import glib
 import gtk
 import os.path
 
@@ -74,7 +77,7 @@ class PttXPGui:
         self.script_client.print_message(message)
 
     def on_post_start_button_clicked(self, widget):
-        self.post_print_message('------------- Start -------------\n')
+        widget.set_sensitive(False)
         host = self.host.get_text()
         user = self.user.get_text()
         passwd = self.passwd.get_text()
@@ -89,13 +92,12 @@ class PttXPGui:
             return
 
         self.post_client.stop = False
-        try:
-            self.post_client.login(host, user, passwd)
-            self.post_client.crosspost(limit, delete, boardlist, title, content)
-        except PttXPLoginError:
-            self.post_print_message('\n----------- Abort -----------\n')
-            return
-        self.post_print_message('\n----------- All Finished -----------\n')
+        self.thread = threading.Thread(target=self.post_client.crosspost,
+                              args=(limit, delete, boardlist, title, content))
+
+        self.post_client.login(host, user, passwd)
+        self.thread.start()
+        glib.timeout_add_seconds(10, self.join_cb)
 
     def on_post_stop_button_clicked(self, widget):
         self.post_client.stop = True
@@ -111,13 +113,13 @@ class PttXPGui:
             self.boardlist.set_text(name)
     
     def on_run_start_button_clicked(self, widget):
-        self.script_print_message('------------- Start -------------\n')
+        self.script_print_message('>>> Start\n')
         self.script_runner.stop = False
         textbuffer = self.xdscript.get_buffer()
         start, end = textbuffer.get_bounds()
         script = textbuffer.get_text(start, end)
         self.script_runner.run(script)
-        self.script_print_message('\n----------- All Finished -----------\n')
+        self.script_print_message('\n>>> All Finished\n')
 
     def on_run_stop_button_clicked(self, widget):
         self.script_runner.stop = True
@@ -155,6 +157,13 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
     def on_quit_clicked(self, widget):
         gtk.main_quit()
+
+    def join_cb(self):
+        self.thread.join(1)
+        alive = self.thread.isAlive()
+        if not alive:
+            self.post_start_button.set_sensitive(True)
+        return alive
  
     def get_filename(self):
         chooser = gtk.FileChooserDialog("Browse", self.mainwindow,
