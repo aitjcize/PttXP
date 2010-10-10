@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from distutils.core import setup
-from DistUtilsExtra.command import *
 
 _data_files = [
 	('share/applications', ['data/pttxp.desktop']),
