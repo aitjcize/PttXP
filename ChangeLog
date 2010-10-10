@@ -1,18 +1,30 @@
-2010-09-11  AZ Huang <aitjcize@gmail.com>
+------------------------------------------------------------------------------
+PttXP Changelog
+------------------------------------------------------------------------------
 
-  * data/pttxp.glade: update glade file
+PttXP 0.1.5 (October 10, 2010):
 
-  * wiki/pttxp_001.png, wiki/pttxp_002.png, wiki/pttxp_003.png,
-  wiki/pttxp_004.png: add wiki files
+	Bugs fixed:
+	* Fix delete_header macro
+	* In crosspost mode, retry for 5 times if login failed.
 
-  * ChangeLog, dev/control, pttxp/misc.py, setup.py: Fix typo in setup.py
+	Features added:
+	* crosspost is now moved to another thread, prevent GUI from hanging
 
-  * ChangeLog, README, data/pttxp.desktop, dev/chver.sh, dev/control,
-  dev/rules, setup.py: Add build related files
+PttXP 0.1.3 (September 26th, 2010):
 
-  * README, bin/pttxp, client.py, data/pttxp.glade, data/pttxp.png, main.py,
-  process.py, pttxp/client.py, pttxp/gui.py, pttxp/main.py, pttxp/misc.py,
-  pttxp/runner.py, test.py, test.script: finish pttxp
+	Bugs fixed:
+	* Fix go_board macro
 
-  * client.py, client.pyc, list.txt, process.py, process.pyc, test.py,
-  test.txt: little change
+PttXP 0.1.2 (September 21th, 2010):
+
+	Bugs fixed:
+	* Fix login error
+	* Fix newline character under windows
+
+	Features added:
+	* delete post header 
+
+PttXP 0.1.1 (September 11th, 2010):
+
+	* Initial release
