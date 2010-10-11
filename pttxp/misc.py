@@ -31,18 +31,18 @@ running_os = platform.system()
 
 # Program Information
 program_name = 'PttXP'
-program_version = '0.1.3'
+program_version = '0.1.5'
 
 program_logo = SHARE_PATH + '/pttxp.png'
 ui_file = SHARE_PATH + '/pttxp.glade'
-
-# For py2exe packaging
-if running_os == 'Windows':
-    program_logo = 'pttxp.png'
-    ui_file = 'pttxp.glade'
 
 # If lanuch from source directory
 if not sys.argv[0].startswith('/usr/bin'):
     prefix = dirname(abspath(sys.argv[0]))
     program_logo = prefix + '/../data/pttxp.png'
     ui_file = prefix + '/../data/pttxp.glade'
+
+# For py2exe packaging
+if running_os == 'Windows':
+    program_logo = 'pttxp.png'
+    ui_file = 'pttxp.glade'

@@ -342,6 +342,7 @@
                         <property name="height_request">149</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="border_width">2</property>
                         <property name="pixels_inside_wrap">2</property>
                         <property name="editable">False</property>
                       </object>
@@ -379,6 +380,7 @@
                       <object class="GtkTextView" id="xdscript">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="border_width">2</property>
                       </object>
                     </child>
                   </object>
@@ -431,6 +433,7 @@
                         <property name="height_request">80</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="border_width">2</property>
                       </object>
                     </child>
                   </object>

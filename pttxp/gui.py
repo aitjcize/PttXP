@@ -6,7 +6,7 @@ import glib
 import gtk
 import os.path
 
-from client import PttXPTelnetClient, PttXPLoginError
+from client import PttXPTelnetClient, PttXPLoginError, PttXPLoginFatal
 from runner import PttXPScriptRunner, HELPTEXT
 from misc import *
 
@@ -77,7 +77,6 @@ class PttXPGui:
         self.script_client.print_message(message)
 
     def on_post_start_button_clicked(self, widget):
-        widget.set_sensitive(False)
         host = self.host.get_text()
         user = self.user.get_text()
         passwd = self.passwd.get_text()
@@ -88,14 +87,31 @@ class PttXPGui:
         content = self.content.get_text()
 
         if not (host and user and passwd and boardlist and title and content):
-            self.post_print_message('Please fill all blanks!')
+            self.post_print_message('(EE) Please fill all blanks!')
             return
 
+        widget.set_sensitive(False)
         self.post_client.stop = False
         self.thread = threading.Thread(target=self.post_client.crosspost,
                               args=(limit, delete, boardlist, title, content))
 
-        self.post_client.login(host, user, passwd)
+        for i in range(5):
+            try:
+                self.post_client.login(self.host, self.user, self.passwd)
+            except PttXPLoginFatal:
+                self.post_start_button.set_sensitive(True)
+                return
+            except PttXPLoginError:
+                if i == 4:
+                    self.post_start_button.set_sensitive(True)
+                    self.print_message('(EE) Failed to login\n')
+                    return
+                else:
+                    self.print_message('(II) Retring ...')
+                    self.post_client.logout()
+            else:
+                break
+
         self.thread.start()
         glib.timeout_add_seconds(10, self.join_cb)
 
@@ -113,13 +129,13 @@ class PttXPGui:
             self.boardlist.set_text(name)
     
     def on_run_start_button_clicked(self, widget):
-        self.script_print_message('>>> Start\n')
+        self.script_print_message('(II) Start\n')
         self.script_runner.stop = False
         textbuffer = self.xdscript.get_buffer()
         start, end = textbuffer.get_bounds()
         script = textbuffer.get_text(start, end)
         self.script_runner.run(script)
-        self.script_print_message('\n>>> All Finished\n')
+        self.script_print_message('\n(II) All Finished\n')
 
     def on_run_stop_button_clicked(self, widget):
         self.script_runner.stop = True

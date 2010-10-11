@@ -32,7 +32,7 @@ if program.startswith('./') or program.startswith('bin/'):
 
 
 from pttxp.runner import PttXPScriptRunner
-from pttxp.client import PttXPTelnetClient, PttXPLoginError
+from pttxp.client import PttXPTelnetClient, PttXPLoginError, PttXPLoginFatal
 
 if len(sys.argv) < 2:
     print 'Error: no input file.'
@@ -44,5 +44,5 @@ runner = PttXPScriptRunner(client, True)
 try:
     with open(sys.argv[1], 'r') as f:
         runner.run(f.read())
-except PttXPLoginError:
-    print 'Login error'
+except (PttXPLoginError, PttXPLoginFatal):
+    print '(EE) Login error'

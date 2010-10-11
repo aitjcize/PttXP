@@ -128,8 +128,9 @@ class PttXPScriptRunner:
         '''
         controls = script.split('\n')
         for term in controls:
+            if not len(term): return
             if self.showterm:
-                self.client.print_message("Executing '%s' ..." % term)
+                self.client.print_message('(II) Executing \'%s\' ...' % term)
             # stop if signaled
             if self.stop: return
 

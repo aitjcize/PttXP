@@ -1,0 +1,8 @@
+include AUTHORS
+include ChangeLog
+include COPYING
+include README
+include setup.py
+include bin/*
+include data/*
+include pttxp/*
