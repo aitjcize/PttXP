@@ -240,6 +240,7 @@ class PttXPTelnetClient:
         try:
             self.telnet.write(data)
             self.output()
+            time.sleep(0.1)
         except AttributeError:
             self.print_message('(EE) Write error')
 
