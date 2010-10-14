@@ -97,7 +97,7 @@ class PttXPGui:
 
         for i in range(5):
             try:
-                self.post_client.login(self.host, self.user, self.passwd)
+                self.post_client.login(host, user, passwd)
             except PttXPLoginFatal:
                 self.post_start_button.set_sensitive(True)
                 return
@@ -129,13 +129,15 @@ class PttXPGui:
             self.boardlist.set_text(name)
     
     def on_run_start_button_clicked(self, widget):
-        self.script_print_message('(II) Start\n')
         self.script_runner.stop = False
         textbuffer = self.xdscript.get_buffer()
         start, end = textbuffer.get_bounds()
         script = textbuffer.get_text(start, end)
-        self.script_runner.run(script)
-        self.script_print_message('\n(II) All Finished\n')
+        self.run_start_button.set_sensitive(False)
+        self.thread = threading.Thread(target=self.script_runner.run,
+                              args=(script,))
+        self.thread.start()
+        glib.timeout_add_seconds(10, self.join_cb)
 
     def on_run_stop_button_clicked(self, widget):
         self.script_runner.stop = True
@@ -172,6 +174,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
         about.show_all()
 
     def on_quit_clicked(self, widget):
+        self.thread.join()
         gtk.main_quit()
 
     def join_cb(self):
@@ -179,6 +182,7 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
         alive = self.thread.isAlive()
         if not alive:
             self.post_start_button.set_sensitive(True)
+            self.run_start_button.set_sensitive(True)
         return alive
  
     def get_filename(self):

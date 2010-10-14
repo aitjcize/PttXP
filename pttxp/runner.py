@@ -21,6 +21,8 @@
 import re
 import time
 
+from client import PttXPLoginError, PttXPLoginFatal
+
 HELPTEXT = """PttXP Help
 
 Macros:
@@ -126,30 +128,35 @@ class PttXPScriptRunner:
         '''
         run script from text
         '''
+        self.client.print_message('(II) Start')
         controls = script.split('\n')
-        for term in controls:
-            if not len(term): return
-            if self.showterm:
-                self.client.print_message('(II) Executing \'%s\' ...' % term)
-            # stop if signaled
-            if self.stop: return
+        try:
+            for term in controls:
+                if not len(term): return
+                if self.showterm:
+                    self.client.print_message('(II) Executing \'%s\' ...' %term)
+                # stop if signaled
+                if self.stop: return
 
-            # This is very importent, if you send characters without delay,
-            # telnet will go into non-negociate mode
-            time.sleep(0.3)
+                # This is very importent, if you send characters without delay,
+                # telnet will go into non-negociate mode
+                time.sleep(0.3)
 
-            for key in self.cmds:
-                got = re.findall(key, term)
-                var = key.count('(')
-                if got:
-                    if var == 0:
-                        self.cmds[key]()
-                        break;
-                    elif var == 1:
-                        self.cmds[key](got[0])
-                        break;
-                    else:
-                        self.cmds[key](*got[0])
-                        break;
-            else: # not macros, write it direct to telnet
-                self.client.write(term)
+                for key in self.cmds:
+                    got = re.findall(key, term)
+                    var = key.count('(')
+                    if got:
+                        if var == 0:
+                            self.cmds[key]()
+                            break;
+                        elif var == 1:
+                            self.cmds[key](got[0])
+                            break;
+                        else:
+                            self.cmds[key](*got[0])
+                            break;
+                else: # not macros, write it direct to telnet
+                    self.client.write(term)
+        except (PttXPLoginError, PttXPLoginFatal):
+            return
+        self.client.print_message('(II) All Finished\n')

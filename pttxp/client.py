@@ -52,7 +52,7 @@ class PttXPTelnetClient:
         try:
             self.telnet.open(host)
         except:
-            self.print_message('(EE) Ivalid host.')
+            self.print_message('(EE) Invalid host - %s.' % host)
             raise PttXPLoginFatal
 
         self.connected = True
@@ -65,7 +65,7 @@ class PttXPTelnetClient:
         try:
             self.telnet.open(host)
         except:
-            self.print_message('(EE) Ivalid host.')
+            self.print_message('(EE) Invalid host - %s.' % host)
             raise PttXPLoginFatal
 
         self.print_message('(II) Logging in as %s ...' % user)
@@ -184,7 +184,7 @@ class PttXPTelnetClient:
         self.key_enter()
 
     def crosspost(self, limit, delete_header, boardlist, title, filename):
-        self.print_message('(II) Start \n')
+        self.print_message('(II) Start')
         if not self.loggedin:
             self.print_message('(EE) Please login first!')
             exit(1)
