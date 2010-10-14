@@ -77,7 +77,8 @@ class PttXPTelnetClient:
         # Do not delete other login
         if self.tobig5('刪除其他重複登入的連線嗎？') in login_status:
             self.telnet.write('n\r')
-            login_status = self.telnet.read_until('Dummy', 5)[-320:]
+            login_status = self.telnet.read_until(
+                self.tobig5('請按任意鍵繼續'), 5)[-320:]
             self.print_message('(WW) Multiple login detected, continuing.')
 
         if self.tobig5('頻繁登入') in login_status:
@@ -90,8 +91,8 @@ class PttXPTelnetClient:
                                'retry later or change the account.')
             raise PttXPLoginFatal
 
-
         if not self.tobig5('請按任意鍵繼續') in login_status:
+            print login_status
             self.loggedin = False
             self.print_message('(EE) Login failed.')
             raise PttXPLoginError

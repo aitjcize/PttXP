@@ -16,7 +16,7 @@ files = ["doc/README",
 
 setup(
 	name = 'pttxp',
-	version = '0.1.5',
+	version = '0.1.5.1',
 	description = 'Ptt Posting/Scripting Utility',
 	author = 'Wei-Ning Huang (AZ)',
 	author_email = 'aitjcize@gmail.com',
