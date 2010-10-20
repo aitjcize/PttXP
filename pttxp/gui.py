@@ -26,6 +26,8 @@ class PttXPGuiTelnetClient(PttXPTelnetClient):
 
 class PttXPGui:
     def __init__(self):
+        self.thread = None
+
         # GUI related
         self.builder = gtk.Builder()
         self.builder.add_from_file(ui_file)
@@ -174,11 +176,13 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
         about.show_all()
 
     def on_quit_clicked(self, widget):
-        self.thread.join()
+        if self.thread:
+            self.thread.join()
         gtk.main_quit()
 
     def join_cb(self):
         self.thread.join(1)
+        self.thread = None
         alive = self.thread.isAlive()
         if not alive:
             self.post_start_button.set_sensitive(True)
