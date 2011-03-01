@@ -182,7 +182,6 @@ Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
     def join_cb(self):
         self.thread.join(1)
-        self.thread = None
         alive = self.thread.isAlive()
         if not alive:
             self.post_start_button.set_sensitive(True)

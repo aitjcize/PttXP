@@ -183,6 +183,7 @@ class PttXPTelnetClient:
         self.key_control('x')
         self.write('s\r')
         self.key_enter()
+        self.key_enter()
 
     def crosspost(self, limit, delete_header, boardlist, title, filename):
         self.print_message('(II) Start')
