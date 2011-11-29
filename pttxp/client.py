@@ -92,7 +92,6 @@ class PttXPTelnetClient:
             raise PttXPLoginFatal
 
         if not self.tobig5('請按任意鍵繼續') in login_status:
-            print login_status
             self.loggedin = False
             self.print_message('(EE) Login failed.')
             raise PttXPLoginError
@@ -248,10 +247,10 @@ class PttXPTelnetClient:
     def write_content_from_file(self, name):
         self.print_message('(II) Writting from file %s ...' % name)
         if 'Windows' == platform.system():
-            name = name.decode('utf8').encode('big5')
+            name = self.check_encode(name)
 
         f = open(name, 'r')
-        data = f.read()
+        data = self.check_encode(f.read())
 
         # replace \x1b with \025 to provide ANSI color output
         data = data.replace('\x1b', '\025')
