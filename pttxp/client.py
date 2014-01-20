@@ -22,6 +22,8 @@
 import platform
 import telnetlib
 import time
+import re
+import sys
 
 class PttXPLoginError(Exception):
     pass
@@ -69,7 +71,8 @@ class PttXPTelnetClient:
             raise PttXPLoginFatal
 
         self.print_message('(II) Logging in as %s ...' % user)
-        self.output()
+        word = self.telnet.read_until(self.tobig5('註冊'), 1)
+
         self.telnet.write('%s\r%s\r' % (user, passwd))
 
         login_status = self.telnet.read_until('[Y/n]', 3)[-320:]
@@ -78,7 +81,7 @@ class PttXPTelnetClient:
         if self.tobig5('刪除其他重複登入的連線嗎？') in login_status:
             self.telnet.write('n\r')
             login_status = self.telnet.read_until(
-                self.tobig5('請按任意鍵繼續'), 5)[-320:]
+                self.tobig5('請按任意鍵繼續'))[-320:]
             self.print_message('(WW) Multiple login detected, continuing.')
 
         if self.tobig5('頻繁登入') in login_status:
@@ -96,20 +99,22 @@ class PttXPTelnetClient:
             self.print_message('(EE) Login failed.')
             raise PttXPLoginError
 
-        self.key_enter()
+        self.key_enter('再見')
 
         # Skip prompt for saving unfinished post
         data = self.telnet.read_until('[S]', 3)
         if '[S]' in data:
-            self.write('q\r')
-        else:
-            self.key_enter()
+            self.write('q\r', '再見')
+        #else:
+        #    self.key_enter()
 
         self.loggedin = True
+        
 
     def logout(self):
         self.print_message('(II) Logout')
         # TODO: find a better way
+        '''
         try:
             for i in range(20):
                 self.telnet.write('\033[D')
@@ -118,48 +123,51 @@ class PttXPTelnetClient:
             self.telnet.write('y\r')
             self.telnet.close()
         except: pass
+        '''
+        # phoenix104104: not sure whether direct close telnet is a better way (2014/01/20)
+        self.telnet.close()
         self.loggedin = False
 
-    def key_enter(self):
-        self.write('\r')
+    def key_enter(self, word=0):
+        self.write('\r', word)
 
-    def key_up(self):
-        self.write('\033[A')
+    def key_up(self, word=0):
+        self.write('\033[A', word)
 
-    def key_down(self):
-        self.write('\033[B')
+    def key_down(self, word=0):
+        self.write('\033[B', word)
 
-    def key_left(self):
-        self.write('\033[D')
+    def key_left(self, word=0):
+        self.write('\033[D', word)
 
-    def key_right(self):
-        self.write('\033[C')
+    def key_right(self, word=0):
+        self.write('\033[C', word)
 
-    def key_control(self, key):
-        self.write(chr(ord(key) - ord('a') + 1))
+    def key_control(self, key, word=0):
+        self.write(chr(ord(key) - ord('a') + 1), word)
 
-    def key_pageup(self):
-        self.write('\033[5~')
+    def key_pageup(self, word=0):
+        self.write('\033[5~', word)
 
-    def key_pagedown(self):
-        self.write('\033[6~')
+    def key_pagedown(self, word=0):
+        self.write('\033[6~', word)
 
-    def key_home(self):
-        self.write('\033OH')
+    def key_home(self, word=0):
+        self.write('\033OH', word)
 
-    def key_end(self):
-        self.write('\033OF')
+    def key_end(self, word=0):
+        self.write('\033OF', word)
 
     def postfile(self, title, filename):
         self.print_message('(II) Posting %s ...' % title)
         # press end to prevent pressing ctrl-p in the welcome page
-        self.key_end()
-        self.key_end()
-        self.key_control('p')
-        self.key_enter()
+        self.key_end('繼續')
+        self.key_end('進板畫面')
+        self.key_control('p', '不選')
+        self.key_enter('標題：')
         self.write('%s\r' % self.check_encode(title))
         self.write_content_from_file(filename)
-        self.key_control('x')
+        self.key_control('x', '檔案嗎？')
         self.write('s\r')
         self.write('0\r')
 
@@ -191,6 +199,7 @@ class PttXPTelnetClient:
             exit(1)
 
         limit = int(limit)
+        print 'limit = %d' % limit
         # logout first to prevent crossing the cp_limit
         self.logout()
         count = 0
@@ -234,13 +243,24 @@ class PttXPTelnetClient:
 
         self.logout()
         self.print_message('(II) All Finished\n')
-    
-    def write(self, data):
+        
+
+    def write(self, data, word=0):
+        
         if 0 == len(data): return
         try:
             self.telnet.write(data)
-            self.output()
-            time.sleep(0.1)
+            #self.output()
+            
+            if word != 0 :
+                getStr = self.telnet.read_until(self.tobig5(word), 0.1)
+                #print "Expected word: %s" %word
+                #if self.tobig5(word) in getStr:
+                #    print "Find %s" %word
+            else:
+                self.output()
+                time.sleep(0.1)
+            
         except AttributeError:
             self.print_message('(EE) Write error')
 
@@ -263,12 +283,14 @@ class PttXPTelnetClient:
         f.close()
 
     def go_board(self, board, mute=False):
-        for i in range(10):
-            self.key_left()
-        self.write('s')
+        #for i in range(10):
+        #    self.key_left()
+        self.write('s', '搜尋')
         self.write('%s\r' % board)
+
         if not mute:
             self.print_message('\n(II) In board: %s' % board)
+       
 
     def print_message(self, msg):
         print msg
@@ -279,3 +301,17 @@ class PttXPTelnetClient:
     
     def tobig5(self, str):
         return str.decode('utf8').encode('big5')
+
+    def toutf8(self, str):
+        return str.decode('big5').encode('utf8')
+
+    def filterWord(self, word):
+        word = re.sub(r'\033\[.*?m', '', word)
+        word = word.decode('big5', 'ignore').encode('utf8')
+        return word
+    
+    def dump(self, fileName, str):
+        f = open(fileName, 'w')
+        f.write(str)
+        f.close()
+        print 'dump txt file: %s' %fileName
