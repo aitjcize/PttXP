@@ -81,7 +81,7 @@ class PttXPTelnetClient:
         if self.tobig5('刪除其他重複登入的連線嗎？') in login_status:
             self.telnet.write('n\r')
             login_status = self.telnet.read_until(
-                self.tobig5('請按任意鍵繼續'))[-320:]
+                    self.tobig5('請按任意鍵繼續'))[-320:]
             self.print_message('(WW) Multiple login detected, continuing.')
 
         if self.tobig5('頻繁登入') in login_status:
@@ -91,7 +91,7 @@ class PttXPTelnetClient:
 
         if self.tobig5('登入太頻繁') in login_status:
             self.print_message('(EE) PTT Error: Login too frequently, please '
-                               'retry later or change the account.')
+                    'retry later or change the account.')
             raise PttXPLoginFatal
 
         if not self.tobig5('請按任意鍵繼續') in login_status:
@@ -109,7 +109,7 @@ class PttXPTelnetClient:
         #    self.key_enter()
 
         self.loggedin = True
-        
+
 
     def logout(self):
         self.print_message('(II) Logout')
@@ -199,7 +199,6 @@ class PttXPTelnetClient:
             exit(1)
 
         limit = int(limit)
-        print 'limit = %d' % limit
         # logout first to prevent crossing the cp_limit
         self.logout()
         count = 0
@@ -243,15 +242,15 @@ class PttXPTelnetClient:
 
         self.logout()
         self.print_message('(II) All Finished\n')
-        
+
 
     def write(self, data, word=0):
-        
+
         if 0 == len(data): return
         try:
             self.telnet.write(data)
             #self.output()
-            
+
             if word != 0 :
                 getStr = self.telnet.read_until(self.tobig5(word), 0.1)
                 #print "Expected word: %s" %word
@@ -260,7 +259,7 @@ class PttXPTelnetClient:
             else:
                 self.output()
                 time.sleep(0.1)
-            
+
         except AttributeError:
             self.print_message('(EE) Write error')
 
@@ -290,7 +289,7 @@ class PttXPTelnetClient:
 
         if not mute:
             self.print_message('\n(II) In board: %s' % board)
-       
+
 
     def print_message(self, msg):
         print msg
@@ -298,7 +297,7 @@ class PttXPTelnetClient:
     def output(self):
         data = self.telnet.read_very_eager()
         return data
-    
+
     def tobig5(self, str):
         return str.decode('utf8').encode('big5')
 
@@ -309,7 +308,7 @@ class PttXPTelnetClient:
         word = re.sub(r'\033\[.*?m', '', word)
         word = word.decode('big5', 'ignore').encode('utf8')
         return word
-    
+
     def dump(self, fileName, str):
         f = open(fileName, 'w')
         f.write(str)
